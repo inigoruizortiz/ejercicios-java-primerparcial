@@ -1,0 +1,124 @@
+package es.deusto.ingenieria.esqui.datos;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import es.deusto.ingenieria.esqui.domino.Ciudad;
+import es.deusto.ingenieria.esqui.domino.Ciudad.Pais;
+import es.deusto.ingenieria.esqui.domino.Estacion;
+import es.deusto.ingenieria.esqui.domino.EstadoEstacion;
+import es.deusto.ingenieria.esqui.domino.EstadoEstacion.Apertura;
+import es.deusto.ingenieria.esqui.domino.EstadoEstacion.Clima;
+import es.deusto.ingenieria.esqui.domino.Itinerario;
+
+/**
+ * Carga los CSV de DataInitializer una vez y gestiona sus objetos en memoria.
+ * Se asume su formato: cabecera y campos separados por comas, sin comillas
+ * ni comas o saltos de línea dentro de los campos.
+ * Las listas devueltas son copias modificables; los objetos que contienen son
+ * compartidos. La actualización de estados queda pendiente como ejercicio.
+ */
+public class GestorDatos {
+    private final String directorio;
+    private final List<Ciudad> ciudades = new ArrayList<>();
+    private final List<Estacion> estaciones = new ArrayList<>();
+    private final List<Itinerario> itinerarios = new ArrayList<>();
+    private final Map<Long, Ciudad> ciudadesPorId = new HashMap<>();
+    private final Map<Long, Estacion> estacionesPorId = new HashMap<>();
+    private final Map<String, Estacion> estacionesPorNombre = new HashMap<>();
+
+    /** Carga resources/data, ejecutando desde la raíz del proyecto. */
+    public GestorDatos() {
+        this("resources/data");
+    }
+
+    /**
+     * @throws UncheckedIOException si no se puede leer un CSV.
+     */
+    public GestorDatos(String directorio) {
+        this.directorio = directorio;
+        try {
+            cargarDatos();
+        } catch (IOException e) {
+            throw new UncheckedIOException("No se han podido cargar los datos de " + directorio, e);
+        }
+    }
+
+    public List<Ciudad> getCiudades() {
+        return new ArrayList<>(ciudades);
+    }
+
+    public List<Estacion> getEstaciones() {
+        return new ArrayList<>(estaciones);
+    }
+
+    public List<Itinerario> getItinerarios() {
+        return new ArrayList<>(itinerarios);
+    }
+
+    private void cargarDatos() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(directorio + "/ciudades.csv", StandardCharsets.UTF_8))) {
+            reader.readLine(); // Omitir la cabecera.
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] campos = linea.split(",");
+                Ciudad ciudad = new Ciudad(Long.parseLong(campos[0]), campos[1], Pais.valueOf(campos[2]));
+                ciudades.add(ciudad);
+                ciudadesPorId.put(ciudad.getId(), ciudad);
+            }
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(directorio + "/estaciones.csv", StandardCharsets.UTF_8))) {
+            reader.readLine(); // Omitir la cabecera.
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] campos = linea.split(",");
+                Ciudad ciudad = ciudadesPorId.get(Long.parseLong(campos[2]));
+                Estacion estacion = new Estacion(Long.parseLong(campos[0]), campos[1], ciudad,
+                        Float.parseFloat(campos[3]), null);
+                estaciones.add(estacion);
+                estacionesPorId.put(estacion.getId(), estacion);
+                estacionesPorNombre.put(estacion.getNombre(), estacion);
+            }
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(directorio + "/itinerarios.csv", StandardCharsets.UTF_8))) {
+            reader.readLine(); // Omitir la cabecera.
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] campos = linea.split(",");
+                Ciudad origen = ciudadesPorId.get(Long.parseLong(campos[1]));
+                Ciudad destino = ciudadesPorId.get(Long.parseLong(campos[2]));
+                itinerarios.add(new Itinerario(Long.parseLong(campos[0]), origen, destino,
+                        Integer.parseInt(campos[3])));
+            }
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(directorio + "/estados.csv", StandardCharsets.UTF_8))) {
+            reader.readLine(); // Omitir la cabecera.
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] campos = linea.split(",");
+                Estacion estacion = estacionesPorId.get(Long.parseLong(campos[0]));
+                EstadoEstacion estado = new EstadoEstacion(Clima.valueOf(campos[1]), Apertura.valueOf(campos[2]),
+                        Integer.parseInt(campos[3]), Float.parseFloat(campos[4]),
+                        new Date(Long.parseLong(campos[5])));
+                estacion.setEstado(estado);
+            }
+        }
+    }
+
+    // TODO: Implementar la actualización del estado de una estación.
+    public boolean actualizarEstadoEstacion(String nombreEstacion, EstadoEstacion nuevoEstado) {
+        // INCORPORA AQUÍ TU CÓDIGO PARA ACTUALIZAR EL ESTADO DE LA ESTACIÓN.
+        return false;
+    }
+}

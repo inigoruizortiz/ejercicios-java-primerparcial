@@ -1,0 +1,207 @@
+package es.deusto.ingenieria.esqui.domino;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+/** Ejecutar en Eclipse con Run As > JUnit Test. No modifica resources/data. */
+public class DataInitializerTest {
+
+    @Rule
+    public TemporaryFolder temporal = new TemporaryFolder();
+
+    private Path directorio;
+
+    @Before
+    public void generarDatos() throws IOException {
+        // Se comprueba también que el inicializador cree los directorios necesarios.
+        directorio = temporal.getRoot().toPath().resolve("resources/data");
+        DataInitializer.inicializarDatos(directorio.toString());
+    }
+
+    @Test
+    public void generaCuatroArchivosConCabecerasYNumeroDeRegistros() throws IOException {
+        comprobarArchivo("ciudades.csv", "ID,NOMBRE,PAIS", 44);
+        comprobarArchivo("estaciones.csv", "ID,NOMBRE,CIUDAD_ID,KM_ESQUIABLES_TOTAL", 45);
+        comprobarArchivo("itinerarios.csv", "ID,ORIGEN_ID,DESTINO_ID,DURACION", 424);
+        comprobarArchivo("estados.csv",
+                "ESTACION_ID,CLIMA,APERTURA,TEMPERATURA,KM_ESQUIABLES_ACTUALES,ACTUALIZACION", 39);
+        try (var archivos = Files.list(directorio)) {
+            assertEquals(4L, archivos.count());
+        }
+    }
+
+    @Test
+    public void conservaNombresConAcentosYPaisesEnUTF8() throws IOException {
+        Map<String, String[]> ciudades = indexar(leerDatos("ciudades.csv"), 1);
+        assertEquals("ES", ciudades.get("Sallent de Gállego")[2]);
+        assertEquals("ES", ciudades.get("La Vall de Boí")[2]);
+        assertEquals("FR", ciudades.get("Bagnères-de-Bigorre")[2]);
+        assertEquals("AD", ciudades.get("Encamp")[2]);
+
+        Map<String, String[]> estaciones = indexar(leerDatos("estaciones.csv"), 1);
+        assertEquals("45.0", estaciones.get("Boí Taüll")[3]);
+        assertEquals("43.0", estaciones.get("Font-Romeu Pyrénées 2000")[3]);
+    }
+
+    @Test
+    public void asignaIdentificadoresPositivosYUnicos() throws IOException {
+        for (String archivo : List.of("ciudades.csv", "estaciones.csv", "itinerarios.csv", "estados.csv")) {
+            Set<Long> ids = new HashSet<>();
+            for (String[] fila : leerDatos(archivo)) {
+                long id = Long.parseLong(fila[0]);
+                assertTrue(archivo + ": identificador no positivo", id > 0);
+                assertTrue(archivo + ": identificador duplicado " + id, ids.add(id));
+            }
+        }
+    }
+
+    @Test
+    public void todasLasReferenciasApuntanADatosExistentes() throws IOException {
+        Map<String, String[]> ciudades = indexar(leerDatos("ciudades.csv"), 0);
+        Map<String, String[]> estaciones = indexar(leerDatos("estaciones.csv"), 0);
+        for (String[] estacion : estaciones.values()) {
+            assertTrue("Ciudad de estación inexistente", ciudades.containsKey(estacion[2]));
+        }
+        for (String[] itinerario : leerDatos("itinerarios.csv")) {
+            assertTrue("Origen inexistente", ciudades.containsKey(itinerario[1]));
+            assertTrue("Destino inexistente", ciudades.containsKey(itinerario[2]));
+        }
+        for (String[] estado : leerDatos("estados.csv")) {
+            assertTrue("Estación del estado inexistente", estaciones.containsKey(estado[0]));
+        }
+
+        String[] formigal = indexar(leerDatos("estaciones.csv"), 1).get("Formigal - Panticosa");
+        assertEquals("Sallent de Gállego", ciudades.get(formigal[2])[1]);
+        assertEquals(182.0f, Float.parseFloat(formigal[3]), 0.001f);
+    }
+
+    @Test
+    public void conservaLosEstadosYLaFechaDeActualizacion() throws IOException {
+        Map<String, String[]> estaciones = indexar(leerDatos("estaciones.csv"), 1);
+        Map<String, String[]> estados = indexar(leerDatos("estados.csv"), 0);
+        String[] estado = estados.get(estaciones.get("Formigal - Panticosa")[0]);
+        assertEquals("NEVANDO", estado[1]);
+        assertEquals("ABIERTA", estado[2]);
+        assertEquals(-4, Integer.parseInt(estado[3]));
+        assertEquals(120.0f, Float.parseFloat(estado[4]), 0.001f);
+        assertEquals("CERRADA", estados.get(estaciones.get("Espot")[0])[2]);
+
+        for (String[] fila : estados.values()) {
+            EstadoEstacion.Clima.valueOf(fila[1]);
+            EstadoEstacion.Apertura.valueOf(fila[2]);
+            Integer.parseInt(fila[3]);
+            assertTrue(Float.parseFloat(fila[4]) >= 0);
+            Calendar fecha = Calendar.getInstance();
+            fecha.setTimeInMillis(Long.parseLong(fila[5]));
+            assertEquals(2026, fecha.get(Calendar.YEAR));
+            assertEquals(Calendar.JANUARY, fecha.get(Calendar.MONTH));
+            assertEquals(9, fecha.get(Calendar.DAY_OF_MONTH));
+            assertEquals(10, fecha.get(Calendar.HOUR_OF_DAY));
+            assertEquals(0, fecha.get(Calendar.MINUTE));
+            assertEquals(0, fecha.get(Calendar.SECOND));
+        }
+    }
+
+    @Test
+    public void noInventaEstadosParaEstacionesSinInformacion() throws IOException {
+        Map<String, String[]> estados = indexar(leerDatos("estados.csv"), 0);
+        Set<String> sinEstado = new HashSet<>();
+        for (String[] estacion : leerDatos("estaciones.csv")) {
+            if (!estados.containsKey(estacion[0])) {
+                sinEstado.add(estacion[1]);
+            }
+        }
+        assertEquals(Set.of("Tavascán", "Ski Canaro", "Ax 3 Domaines", "Guzet",
+                "Font-Romeu Pyrénées 2000", "Formiguères"), sinEstado);
+    }
+
+    @Test
+    public void itinerariosTienenVueltaYDuracionesDentroDelRango() throws IOException {
+        Map<String, String[]> ciudades = indexar(leerDatos("ciudades.csv"), 0);
+        Map<String, Integer> rutas = new HashMap<>();
+        for (String[] itinerario : leerDatos("itinerarios.csv")) {
+            String origen = itinerario[1];
+            String destino = itinerario[2];
+            int duracion = Integer.parseInt(itinerario[3]);
+            assertNotEquals(origen, destino);
+            boolean internacional = !ciudades.get(origen)[2].equals(ciudades.get(destino)[2]);
+            assertTrue("Duración fuera de rango", internacional
+                    ? duracion >= 240 && duracion <= 480
+                    : duracion >= 30 && duracion <= 150);
+            assertNull("Ruta duplicada", rutas.put(origen + ":" + destino, duracion));
+        }
+        for (String[] itinerario : leerDatos("itinerarios.csv")) {
+            assertEquals("La vuelta debe durar lo mismo que la ida",
+                    Integer.valueOf(itinerario[3]), rutas.get(itinerario[2] + ":" + itinerario[1]));
+        }
+    }
+
+    @Test
+    public void segundaEjecucionSobrescribeSinAcumularDatos() throws IOException {
+        List<String> ciudades = Files.readAllLines(directorio.resolve("ciudades.csv"), StandardCharsets.UTF_8);
+        List<String> estaciones = Files.readAllLines(directorio.resolve("estaciones.csv"), StandardCharsets.UTF_8);
+        // Simula archivos previos con datos obsoletos.
+        for (String archivo : List.of("ciudades.csv", "estaciones.csv", "itinerarios.csv", "estados.csv")) {
+            Files.writeString(directorio.resolve(archivo), "DATOS OBSOLETOS\n", StandardCharsets.UTF_8);
+        }
+        DataInitializer.inicializarDatos(directorio.toString());
+        assertEquals(ciudades, Files.readAllLines(directorio.resolve("ciudades.csv"), StandardCharsets.UTF_8));
+        assertEquals(estaciones, Files.readAllLines(directorio.resolve("estaciones.csv"), StandardCharsets.UTF_8));
+        assertEquals(424, leerDatos("itinerarios.csv").size());
+        assertEquals(39, leerDatos("estados.csv").size());
+    }
+
+    @Test
+    public void propagaErrorSiLaRutaDeSalidaEsUnArchivo() throws IOException {
+        Path archivo = temporal.newFile("salida.csv").toPath();
+        Files.writeString(archivo, "No sobrescribir", StandardCharsets.UTF_8);
+        assertThrows(IOException.class, () -> DataInitializer.inicializarDatos(archivo.toString()));
+        assertEquals("No sobrescribir", Files.readString(archivo, StandardCharsets.UTF_8));
+    }
+
+    private void comprobarArchivo(String nombre, String cabecera, int registros) throws IOException {
+        Path archivo = directorio.resolve(nombre);
+        assertTrue("No se ha generado " + nombre, Files.isRegularFile(archivo));
+        List<String> lineas = Files.readAllLines(archivo, StandardCharsets.UTF_8);
+        assertEquals(cabecera, lineas.get(0));
+        assertEquals(registros + 1, lineas.size());
+        int columnas = cabecera.split(",").length;
+        for (String[] fila : leerDatos(nombre)) {
+            assertEquals("Número de columnas incorrecto en " + nombre, columnas, fila.length);
+        }
+    }
+
+    /** Los datos de ejemplo actuales no contienen comas, comillas ni saltos de línea. */
+    private List<String[]> leerDatos(String archivo) throws IOException {
+        List<String> lineas = Files.readAllLines(directorio.resolve(archivo), StandardCharsets.UTF_8);
+        List<String[]> datos = new ArrayList<>();
+        for (int i = 1; i < lineas.size(); i++) {
+            datos.add(lineas.get(i).split(",", -1));
+        }
+        return datos;
+    }
+
+    private Map<String, String[]> indexar(List<String[]> filas, int columna) {
+        Map<String, String[]> indice = new HashMap<>();
+        for (String[] fila : filas) {
+            assertNull("Clave duplicada: " + fila[columna], indice.put(fila[columna], fila));
+        }
+        return indice;
+    }
+}

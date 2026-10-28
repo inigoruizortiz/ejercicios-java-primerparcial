@@ -1,0 +1,107 @@
+company;launch_date;location;detail;cost;status
+SpaceX;2020-08-07T05:12;LC-39A, Kennedy Space Center, Florida, USA;Falcon 9 Block 5 | Starlink V1 L9 & BlackSky;50.0;1
+CASC;2020-08-06T04:01;Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China;Long March 2D | Gaofen-9 04 & Q-SAT;29.75;1
+SpaceX;2020-08-04T23:57;Pad A, Boca Chica, Texas, USA;Starship Prototype | 150 Meter Hop;0.0;1
+Roscosmos;2020-07-30T21:25;Site 200/39, Baikonur Cosmodrome, Kazakhstan;Proton-M/Briz-M | Ekspress-80 & Ekspress-103;65.0;1
+ULA;2020-07-30T11:50;SLC-41, Cape Canaveral AFS, Florida, USA;Atlas V 541 | Perseverance;145.0;1
+CASC;2020-07-25T03:13;LC-9, Taiyuan Satellite Launch Center, China;Long March 4B | Ziyuan-3 03, Apocalypse-10 & NJU-HKU 1;64.68000030517578;1
+Roscosmos;2020-07-23T14:26;Site 31/6, Baikonur Cosmodrome, Kazakhstan;Soyuz 2.1a | Progress MS-15;48.5;1
+CASC;2020-07-23T04:41;LC-101, Wenchang Satellite Launch Center, China;Long March 5 | Tianwen-1;0.0;1
+SpaceX;2020-07-20T21:30;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | ANASIS-II;50.0;1
+JAXA;2020-07-19T21:58;LA-Y1, Tanegashima Space Center, Japan;H-IIA 202 | Hope Mars Mission;90.0;1
+Northrop;2020-07-15T13:46;LP-0B, Wallops Flight Facility, Virginia, USA;Minotaur IV | NROL-129;46.0;1
+ExPace;2020-07-10T04:17;Site 95, Jiuquan Satellite Launch Center, China;Kuaizhou 11 | Jilin-1 02E, CentiSpace-1 S2;28.299999237060547;0
+CASC;2020-07-09T12:11;LC-3, Xichang Satellite Launch Center, China;Long March 3B/E | Apstar-6D;29.149999618530273;1
+IAI;2020-07-06T01:00;Pad 1, Palmachim Airbase, Israel;Shavit-2 | Ofek-16;0.0;1
+CASC;2020-07-04T23:44;Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China;Long March 2D | Shiyan-6 02;29.75;1
+Rocket Lab;2020-07-04T21:19;Rocket Lab LC-1A, M?hia Peninsula, New Zealand;Electron/Curie | Pics Or It Didn??¦t Happen;7.5;0
+CASC;2020-07-03T03:10;LC-9, Taiyuan Satellite Launch Center, China;Long March 4B | Gaofen Duomo & BY-02;64.68000030517578;1
+SpaceX;2020-06-30T20:10;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | GPS III SV03;50.0;1
+CASC;2020-06-23T01:43;LC-2, Xichang Satellite Launch Center, China;Long March 3B/E | Beidou-3 G3;29.149999618530273;1
+CASC;2020-06-17T07:19;Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China;Long March 2D | Gaofen-9 03, Pixing III A & HEAD-5;29.75;1
+SpaceX;2020-06-13T09:21;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | Starlink V1 L8 & SkySat 16 to 18;50.0;1
+Rocket Lab;2020-06-13T05:12;Rocket Lab LC-1A, M?hia Peninsula, New Zealand;Electron/Curie | Don't stop me now!;7.5;1
+CASC;2020-06-10T18:31;LC-9, Taiyuan Satellite Launch Center, China;Long March 2C | Haiyang-1D;30.799999237060547;1
+SpaceX;2020-06-04T01:25;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | Starlink V1 L7;50.0;1
+CASC;2020-05-31T08:53;Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China;Long March 2D | Gaofen-9-02 & HEAD-4;29.75;1
+SpaceX;2020-05-30T19:22;LC-39A, Kennedy Space Center, Florida, USA;Falcon 9 Block 5 | SpaceX Demo-2;50.0;1
+CASC;2020-05-29T20:13;Xichang Satellite Launch Center, China;Long March 11 | XJS-G and XJS-H;5.300000190734863;1
+Virgin Orbit;2020-05-25T19:50;Cosmic Girl, Mojave Air and Space Port, California, USA;LauncherOne | Demo Flight;12.0;0
+VKS RF;2020-05-22T07:31;Site 43/4, Plesetsk Cosmodrome, Russia;Soyuz 2.1b/Fregat-M | Cosmos 2546;0.0;1
+MHI;2020-05-20T17:31;LA-Y2, Tanegashima Space Center, Japan;H-IIB | HTV-9;112.5;1
+ULA;2020-05-17T13:14;SLC-41, Cape Canaveral AFS, Florida, USA;Atlas V 501 | OTV-6 (USSF-7);120.0;1
+ExPace;2020-05-12T01:16;Site 95, Jiuquan Satellite Launch Center, China;Kuaizhou 1A | Xingyun-2 01 (Wuhan) & 02;0.0;1
+CASC;2020-05-05T10:00;LC-101, Wenchang Satellite Launch Center, China;Long March 5B | Test Flight (New Crew Capsule);0.0;1
+Roscosmos;2020-04-25T01:51;Site 31/6, Baikonur Cosmodrome, Kazakhstan;Soyuz 2.1a | Progress MS-14;48.5;1
+SpaceX;2020-04-22T19:30;LC-39A, Kennedy Space Center, Florida, USA;Falcon 9 Block 5 | Starlink V1 L6;50.0;1
+IRGC;2020-04-22T03:59;Launch Plateform, Shahrud Missile Test Site;Qased | Noor 1;0.0;1
+CASC;2020-04-09T11:46;LC-2, Xichang Satellite Launch Center, China;Long March 3B/E | Nusantara Dua;29.149999618530273;0
+Roscosmos;2020-04-09T08:05;Site 31/6, Baikonur Cosmodrome, Kazakhstan;Soyuz 2.1a | Soyuz MS-16;48.5;1
+ULA;2020-03-26T20:18;SLC-41, Cape Canaveral AFS, Florida, USA;Atlas V 551 | AEHF 6;153.0;1
+CASC;2020-03-24T03:43;LC-3, Xichang Satellite Launch Center, China;Long March 2C | Yaogan-30-06;30.799999237060547;1
+Arianespace;2020-03-21T17:06;Site 31/6, Baikonur Cosmodrome, Kazakhstan;Soyuz 2.1b/Fregat | OneWeb #3;48.5;1
+SpaceX;2020-03-18T12:16;LC-39A, Kennedy Space Center, Florida, USA;Falcon 9 Block 5 | Starlink V1 L5;50.0;1
+VKS RF;2020-03-16T18:28;Site 43/4, Plesetsk Cosmodrome, Russia;Soyuz 2.1b/Fregat-M | Cosmos 2545;0.0;1
+CASC;2020-03-16T13:34;LC-201, Wenchang Satellite Launch Center, China;Long March 7A | XJY-6;0.0;0
+CASC;2020-03-09T11:55;LC-2, Xichang Satellite Launch Center, China;Long March 3B/E | Beidou-3 G2;29.149999618530273;1
+SpaceX;2020-03-07T04:50;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | CRS-20;50.0;1
+VKS RF;2020-02-20T08:24;Site 43/3, Plesetsk Cosmodrome, Russia;Soyuz 2.1a/Fregat-M | Meridian-M n†­19L;48.5;1
+CASC;2020-02-19T21:07;LC-3, Xichang Satellite Launch Center, China;Long March 2D | XJS-C to F;29.75;1
+Arianespace;2020-02-18T22:18;ELA-3, Guiana Space Centre, French Guiana, France;Ariane 5 ECA | JCSAT-17 & GEO-KOMPSAT 2B;200.0;1
+SpaceX;2020-02-17T15:05;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | Starlink V1 L4;50.0;1
+Northrop;2020-02-15T20:21;LP-0A, Wallops Flight Facility, Virginia, USA;Antares 230+ | CRS NG-13;85.0;1
+ULA;2020-02-10T04:03;SLC-41, Cape Canaveral AFS, Florida, USA;Atlas V 411 | Solar Orbiter;115.0;1
+ISA;2020-02-09T15:48;Imam Khomeini Spaceport, Semnan Space Center, Iran;Simorgh | Zafar 1;0.0;0
+MHI;2020-02-09T01:34;LA-Y1, Tanegashima Space Center, Japan;H-IIA 202 | IGS-Optical 7;90.0;1
+Arianespace;2020-02-06T21:42;Site 31/6, Baikonur Cosmodrome, Kazakhstan;Soyuz 2.1b/Fregat | OneWeb #2;48.5;1
+Rocket Lab;2020-01-31T02:56;Rocket Lab LC-1A, M?hia Peninsula, New Zealand;Electron/Curie | Birds of a Feather / NROL-151;7.5;1
+SpaceX;2020-01-29T14:06;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | Starlink V1 L3;50.0;1
+SpaceX;2020-01-19T15:30;LC-39A, Kennedy Space Center, Florida, USA;Falcon 9 Block 5 | Crew Dragon Inflight Abort Test;50.0;1
+Arianespace;2020-01-16T21:05;ELA-3, Guiana Space Centre, French Guiana, France;Ariane 5 ECA | Eutelsat Konnect BB4A & GSAT-30;200.0;1
+ExPace;2020-01-16T03:02;Site 95, Jiuquan Satellite Launch Center, China;Kuaizhou 1A | Yinhe-1;0.0;1
+CASC;2020-01-15T02:53;LC-9, Taiyuan Satellite Launch Center, China;Long March 2D | Jilin-1 Wideband 01 & ??uSat-7/8;29.75;1
+CASC;2020-01-07T15:20;LC-2, Xichang Satellite Launch Center, China;Long March 3B/E | TJSW-5;29.149999618530273;1
+SpaceX;2020-01-07T02:19;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | Starlink V1 L2;50.0;1
+CASC;2019-12-27T12:45;LC-101, Wenchang Satellite Launch Center, China;Long March 5 | Shijian-20;0.0;1
+VKS RF;2019-12-26T23:11;Site 133/3, Plesetsk Cosmodrome, Russia;Rokot/Briz KM | Gonets-M ???24, 25, 26 [block-15] & Blits-M1;41.79999923706055;1
+Roscosmos;2019-12-24T12:03;Site 81/24, Baikonur Cosmodrome, Kazakhstan;Proton-M/DM-3 | Elektro-L n†­3;65.0;1
+ULA;2019-12-20T11:36;SLC-41, Cape Canaveral AFS, Florida, USA;Atlas V N22 | Starliner OFT;0.0;1
+CASC;2019-12-20T03:22;LC-9, Taiyuan Satellite Launch Center, China;Long March 4B | CBERS-4A, ETRSS-1 & Others;64.68000030517578;1
+Arianespace;2019-12-18T08:54;ELS, Guiana Space Centre, French Guiana, France;Soyuz ST-A/Fregat-M | CSG-1, CHEOPS & Others;0.0;1
+SpaceX;2019-12-17T00:10;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | JCSAT-18 / Kacific-1;50.0;1
+CASC;2019-12-16T07:22;LC-3, Xichang Satellite Launch Center, China;Long March 3B/YZ-1 | BeiDou-3 M19 & M20;0.0;1
+Blue Origin;2019-12-11T17:55;Blue Origin Launch Site, West Texas, Texas, USA;New Shepard | NS-12;0.0;1
+ISRO;2019-12-11T09:55;First Launch Pad, Satish Dhawan Space Centre, India;PSLV-QL | RISAT 2BR1;21.0;1
+VKS RF;2019-12-11T08:54;Site 43/3, Plesetsk Cosmodrome, Russia;Soyuz 2.1b/Fregat | Cosmos 2544;48.5;1
+ExPace;2019-12-07T08:52;Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China;Kuaizhou 1A | HEAD-2A/B / SpaceTY 16/17 / Tianqi 4A/B;0.0;1
+ExPace;2019-12-07T02:55;Taiyuan Satellite Launch Center, China;Kuaizhou 1A | Jilin-1 Gaofen-02B;0.0;1
+Roscosmos;2019-12-06T09:34;Site 31/6, Baikonur Cosmodrome, Kazakhstan;Soyuz 2.1a | Progress MS-13 (74P);48.5;1
+Rocket Lab;2019-12-06T08:18;Rocket Lab LC-1A, M?hia Peninsula, New Zealand;Electron/Curie | Running Out Of Fingers;7.5;1
+SpaceX;2019-12-05T17:29;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | CRS-19;50.0;1
+CASC;2019-11-27T23:52;LC-9, Taiyuan Satellite Launch Center, China;Long March 4C | Gaofen-12;64.68000030517578;1
+ISRO;2019-11-27T03:58;Second Launch Pad, Satish Dhawan Space Centre, India;PSLV-XL | Cartosat-3 & Rideshares;31.0;1
+Arianespace;2019-11-26T21:23;ELA-3, Guiana Space Centre, French Guiana, France;Ariane 5 ECA | Inmarsat 5 F5 & TIBA-1;200.0;1
+VKS RF;2019-11-25T17:52;Site 43/4, Plesetsk Cosmodrome, Russia;Soyuz 2.1v/Volga | Cosmos 2542 & 2543;0.0;1
+CASC;2019-11-23T00:55;LC-3, Xichang Satellite Launch Center, China;Long March 3B/YZ-1 | BeiDou-3 M21 & M22;0.0;1
+ExPace;2019-11-17T10:00;Site 95, Jiuquan Satellite Launch Center, China;Kuaizhou 1A | KL-Alpha A, KL-Alpha B;0.0;1
+CASC;2019-11-13T06:35;LC-16, Taiyuan Satellite Launch Center, China;Long March 6 | Ningxia-1 (x5);0.0;1
+ExPace;2019-11-13T03:40;Site 95, Jiuquan Satellite Launch Center, China;Kuaizhou 1A | Jilin 1-02A;0.0;1
+SpaceX;2019-11-11T14:56;SLC-40, Cape Canaveral AFS, Florida, USA;Falcon 9 Block 5 | Starlink V1 L1;50.0;1
+CASC;2019-11-04T17:43;LC-2, Xichang Satellite Launch Center, China;Long March 3B/E | Beidou-3 IGSO-3;29.149999618530273;1
+CASC;2019-11-03T03:22;LC-9, Taiyuan Satellite Launch Center, China;Long March 4B | Gaofen-7;64.68000030517578;1
+Northrop;2019-11-02T13:59;LP-0A, Wallops Flight Facility, Virginia, USA;Antares 230+ | CRS NG-12;85.0;1
+Exos;2019-10-26T17:40;Vertical Launch Area, Spaceport America, New Mexico;SARGE | Launch 4;0.0;0
+CASC;2019-10-17T15:21;LC-3, Xichang Satellite Launch Center, China;Long March 3B/E | TJSW-4;29.149999618530273;1
+Rocket Lab;2019-10-17T01:22;Rocket Lab LC-1A, M?hia Peninsula, New Zealand;Electron/Curie | As The Crow Flies;7.5;1
+Northrop;2019-10-11T01:59;Stargazer, Cape Canaveral AFS, Florida, USA;Pegasus XL | ICON;40.0;1
+ILS;2019-10-09T10:17;Site 200/39, Baikonur Cosmodrome, Kazakhstan;Proton-M/Briz-M | Eutelsat 5 West B & MEV-1;65.0;1
+CASC;2019-10-04T18:51;LC-9, Taiyuan Satellite Launch Center, China;Long March 4C | Gaofen 10 (Replacement);64.68000030517578;1
+VKS RF;2019-09-26T07:46;Site 43/4, Plesetsk Cosmodrome, Russia;Soyuz 2.1b/Fregat | Cosmos 2541;48.5;1
+Roscosmos;2019-09-25T13:57;Site 1/5, Baikonur Cosmodrome, Kazakhstan;Soyuz FG | Soyuz MS-15 (61S);0.0;1
+CASC;2019-09-25T00:54;Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China;Long March 2D | Yunhai-1-02;29.75;1
+MHI;2019-09-24T16:05;LA-Y2, Tanegashima Space Center, Japan;H-IIB | HTV-8;112.5;1
+CASC;2019-09-22T21:10;LC-2, Xichang Satellite Launch Center, China;Long March 3B/YZ-1 | BeiDou-3 M23 & M24;0.0;1
+CASC;2019-09-19T06:42;Site 95, Jiuquan Satellite Launch Center, China;Long March 11 | Zhuhai-1 Group 03;5.300000190734863;1
+CASC;2019-09-12T03:26;LC-9, Taiyuan Satellite Launch Center, China;Long March 4B | Ziyuan-2D, BNU-1 & Taurus-1;64.68000030517578;1
+ExPace;2019-08-30T23:41;Site 95, Jiuquan Satellite Launch Center, China;Kuaizhou 1A | KX-09 & Others;0.0;1
+VKS RF;2019-08-30T14:00;Site 133/3, Plesetsk Cosmodrome, Russia;Rokot/Briz KM | Cosmos 2540;41.79999923706055;1

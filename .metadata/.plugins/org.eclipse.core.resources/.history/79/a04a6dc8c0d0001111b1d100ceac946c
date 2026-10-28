@@ -1,0 +1,121 @@
+package es.deusto.ingenieria.prog3.p06.examen.ord202201;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Image;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.border.TitledBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
+import es.deusto.ingenieria.prog3.p06.examen.ord202201.RocketLaunch.Status;
+
+public class JFrameLanzamientos extends JFrame {
+	private static final long serialVersionUID = 1L;
+	
+	public JFrameLanzamientos(Map<String, List<RocketLaunch>> launches) {
+		//Se crea una lista con los nombres de las compañías a partir del Set de claves del mapa
+		List<String> companiesList = new ArrayList<>(launches.keySet());
+		
+		//Ordenar las compañías de mayor a menor número de lanzamientos
+		Collections.sort(companiesList, (c1, c2) -> {
+			//El (* -1) es para invertir el orden
+			return Integer.compare(launches.get(c1).size(), launches.get(c2).size()) * -1;
+		});
+		
+		//Ordenar los lanzamientos de cada compañía por fecha (de más reciente  más antiguo)		
+		for (String company : launches.keySet()) {			
+			//El (* -1) es para invertir el orden
+			Collections.sort(launches.get(company), (rl1, rl2) -> {
+					return rl1.getLaunchDate().compareTo(rl2.getLaunchDate()) * -1;
+			});			
+		}		
+		
+		//Se crea el nodo raiz con el número de compañías
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(String.format("%02d Companies", launches.values().size()));
+		DefaultMutableTreeNode companyNode;
+		
+		//Se recorren las compañías usando la lista ordenada por número de lanzamientos
+		for (String company : companiesList) {
+			//Se crea un nodo por cada compañía con un String y el número de lanzamientos
+			companyNode = new DefaultMutableTreeNode(String.format("%s - %02d launches", company, launches.get(company).size()));
+			//Se añade el nodo de la compañía al nodo raiz.
+			rootNode.add(companyNode);
+			//Se recorren los lanzamientos de cada compañía
+			for (RocketLaunch rl : launches.get(company)) {
+				//Se añade un nodo por cada lanzamineto
+				companyNode.add(new DefaultMutableTreeNode(rl));
+			}	
+		}
+
+		JTree jTreeCompanies = new JTree(rootNode);
+		
+		//Se define el Renderer personalizado para el JTree a partir de un DefaultTreeCellRenderer
+		jTreeCompanies.setCellRenderer(new DefaultTreeCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			public Component getTreeCellRendererComponent(JTree tree, Object value, 
+														  boolean selected, 
+														  boolean expanded,
+														  boolean leaf,
+														  int row,
+														  boolean hasFocus) {
+				super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+				
+				if (value instanceof DefaultMutableTreeNode) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+					
+					//El nodo contiene una cadena de texto y no es la 
+					if (row > 0 && node.getUserObject() instanceof String) {
+						String companyName = (String) node.getUserObject();
+						companyName = companyName.substring(0, companyName.indexOf(" -"));
+						//Se separa el nombre de la compañía para obtener la imagen
+						ImageIcon scaledIcon = new ImageIcon(String.format("/resources/images/%s.png", companyName));
+						//Se escala la imagen a 20x20 píxeles
+						scaledIcon = new ImageIcon(scaledIcon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+						//Se establece la imagen al nodo
+						this.setIcon(scaledIcon);
+						//Se establece el texto para el nodo
+						this.setText(node.getUserObject().toString());
+					//Si el nodo contiene un lanzamiento
+					} else if (node.getUserObject() instanceof RocketLaunch) {
+						RocketLaunch rl = (RocketLaunch) node.getUserObject();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");						
+						//Se define el color del texto dependiendo del valor de Status
+						if (rl.getStatus().equals(Status.SUCCESS)) {
+							this.setForeground(new Color(133, 153, 1));
+						} else {
+							this.setForeground(Color.RED);
+						}
+						//Se formate al texto del nodo con la fecha y la localización
+						this.setText(String.format("%s - %s", formatter.format(rl.getLaunchDate()), rl.getLocation()));
+					}
+				}
+						
+				return this;
+			}
+		});
+		
+		JScrollPane scrollPane = new JScrollPane(jTreeCompanies);
+		scrollPane.setBorder(new TitledBorder("Rocket Launches"));
+		
+		this.setTitle("Rocket Launches GUI");
+		this.setLayout(new BorderLayout(0, 0));		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.add(scrollPane, BorderLayout.CENTER);
+
+		this.setSize(800, 600);
+		this.setLocationRelativeTo(null);		
+		this.setVisible(true);		
+	}	
+}

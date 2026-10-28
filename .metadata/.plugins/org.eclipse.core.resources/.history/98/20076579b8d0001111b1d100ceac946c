@@ -1,0 +1,189 @@
+package es.deusto.ingenieria.esqui.datos;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import es.deusto.ingenieria.esqui.domino.Ciudad;
+import es.deusto.ingenieria.esqui.domino.Ciudad.Pais;
+import es.deusto.ingenieria.esqui.domino.DataInitializer;
+import es.deusto.ingenieria.esqui.domino.Estacion;
+import es.deusto.ingenieria.esqui.domino.EstadoEstacion;
+import es.deusto.ingenieria.esqui.domino.EstadoEstacion.Apertura;
+import es.deusto.ingenieria.esqui.domino.EstadoEstacion.Clima;
+import es.deusto.ingenieria.esqui.domino.Itinerario;
+
+/** Pruebas independientes con CSV en carpetas temporales. */
+public class GestorDatosTest {
+    @Rule
+    public TemporaryFolder temporal = new TemporaryFolder();
+
+    private Path directorio;
+    private GestorDatos gestor;
+
+    @Before
+    public void prepararCSV() throws IOException {
+        directorio = temporal.newFolder("datos").toPath();
+        escribir("ciudades.csv", "ID,NOMBRE,PAIS\n10,Sallent de Gállego,ES\n20,Encamp,AD\n");
+        escribir("estaciones.csv", "ID,NOMBRE,CIUDAD_ID,KM_ESQUIABLES_TOTAL\n"
+                + "7,Formigal,10,182.0\n9,Grandvalira,20,215.0\n");
+        escribir("itinerarios.csv", "ID,ORIGEN_ID,DESTINO_ID,DURACION\n3,10,20,300\n4,20,10,300\n");
+        escribir("estados.csv", "ESTACION_ID,CLIMA,APERTURA,TEMPERATURA,KM_ESQUIABLES_ACTUALES,ACTUALIZACION\n"
+                + "7,NEVANDO,ABIERTA,-4,120.0,1767952800000\n");
+        gestor = new GestorDatos(directorio.toString());
+    }
+
+    @Test
+    public void cargaLosDatosYConservaIdsNombresYValores() {
+        assertEquals(2, gestor.getCiudades().size());
+        assertEquals(2, gestor.getEstaciones().size());
+        assertEquals(2, gestor.getItinerarios().size());
+        Ciudad ciudad = gestor.getCiudades().get(0);
+        assertEquals(10L, ciudad.getId());
+        assertEquals("Sallent de Gállego", ciudad.getNombre());
+        assertEquals(Pais.ES, ciudad.getPais());
+        Estacion estacion = gestor.getEstaciones().get(0);
+        assertEquals(7L, estacion.getId());
+        assertEquals("Formigal", estacion.getNombre());
+        assertEquals(182.0f, estacion.getKmEsquiablesTotal(), 0.001f);
+        assertEstado(estacion.getEstado(), Clima.NEVANDO, Apertura.ABIERTA, -4, 120.0f, 1767952800000L);
+        assertEquals(3L, gestor.getItinerarios().get(0).getId());
+        assertEquals(300, gestor.getItinerarios().get(0).getDuracion());
+    }
+
+    @Test
+    public void relacionesCompartenLasMismasInstanciasDeCiudad() {
+        Ciudad sallent = gestor.getCiudades().get(0);
+        Ciudad encamp = gestor.getCiudades().get(1);
+        assertSame(sallent, gestor.getEstaciones().get(0).getCiudad());
+        assertSame(encamp, gestor.getEstaciones().get(1).getCiudad());
+        assertSame(sallent, gestor.getItinerarios().get(0).getOrigen());
+        assertSame(encamp, gestor.getItinerarios().get(0).getDestino());
+        assertSame(encamp, gestor.getItinerarios().get(1).getOrigen());
+        assertSame(sallent, gestor.getItinerarios().get(1).getDestino());
+    }
+
+    @Test
+    public void conservaEstacionesSinEstado() {
+        assertNull(gestor.getEstaciones().get(1).getEstado());
+    }
+
+    @Test
+    public void modificarListasDevueltasNoAlteraLasColeccionesInternas() {
+        List<Ciudad> ciudades = gestor.getCiudades();
+        Collections.sort(ciudades);
+        assertEquals("Encamp", ciudades.get(0).getNombre());
+        assertEquals("Sallent de Gállego", gestor.getCiudades().get(0).getNombre());
+        ciudades.clear();
+        List<Estacion> estaciones = gestor.getEstaciones();
+        estaciones.remove(0);
+        List<Itinerario> itinerarios = gestor.getItinerarios();
+        itinerarios.removeIf(i -> i.getDuracion() > 100);
+        assertEquals(2, gestor.getCiudades().size());
+        assertEquals(2, gestor.getEstaciones().size());
+        assertEquals(2, gestor.getItinerarios().size());
+    }
+
+    @Test
+    public void leeLineasCRLFYUltimaLineaSinSaltoFinal() throws IOException {
+        escribir("ciudades.csv", "ID,NOMBRE,PAIS\r\n10,Sallent de Gállego,ES\r\n20,Encamp,AD");
+        escribir("estaciones.csv", "ID,NOMBRE,CIUDAD_ID,KM_ESQUIABLES_TOTAL\r\n"
+                + "7,Formigal,10,182.0\r\n9,Grandvalira,20,215.0");
+        GestorDatos cargado = new GestorDatos(directorio.toString());
+        assertEquals(2, cargado.getCiudades().size());
+        assertEquals("Sallent de Gállego", cargado.getCiudades().get(0).getNombre());
+        assertEquals("Encamp", cargado.getCiudades().get(1).getNombre());
+        assertEquals(2, cargado.getEstaciones().size());
+        assertEquals("Grandvalira", cargado.getEstaciones().get(1).getNombre());
+    }
+
+    @Test
+    public void admiteArchivosConSoloCabeceras() throws IOException {
+        for (String archivo : List.of("ciudades.csv", "estaciones.csv", "itinerarios.csv", "estados.csv")) {
+            escribir(archivo, leer(archivo).split("\n")[0] + "\n");
+        }
+        GestorDatos vacio = new GestorDatos(directorio.toString());
+        assertTrue(vacio.getCiudades().isEmpty());
+        assertTrue(vacio.getEstaciones().isEmpty());
+        assertTrue(vacio.getItinerarios().isEmpty());
+    }
+
+    @Test
+    public void informaDelArchivoQueFalta() throws IOException {
+        Files.delete(directorio.resolve("itinerarios.csv"));
+        UncheckedIOException error = assertThrows(UncheckedIOException.class, () -> new GestorDatos(directorio.toString()));
+        assertTrue(error.getCause().getMessage().contains("itinerarios.csv"));
+    }
+
+    @Test
+    public void omiteLaPrimeraLineaSinValidarSuContenido() throws IOException {
+        for (String archivo : List.of("ciudades.csv", "estaciones.csv", "itinerarios.csv", "estados.csv")) {
+            String contenido = leer(archivo);
+            escribir(archivo, "Cabecera informativa\n" + contenido.substring(contenido.indexOf('\n') + 1));
+        }
+        GestorDatos cargado = new GestorDatos(directorio.toString());
+        assertEquals(2, cargado.getCiudades().size());
+        assertEquals(2, cargado.getEstaciones().size());
+        assertEquals(2, cargado.getItinerarios().size());
+        assertNotNull(cargado.getEstaciones().get(0).getEstado());
+    }
+
+    @Test
+    public void rechazaNumerosYEnumeracionesIncorrectos() throws IOException {
+        String original = leer("estados.csv");
+        for (String fila : List.of("7,INVENTADO,ABIERTA,-4,120.0,123",
+                "7,NEVANDO,INVENTADA,-4,120.0,123", "7,NEVANDO,ABIERTA,frio,120.0,123",
+                "7,NEVANDO,ABIERTA,-4,muchos,123", "7,NEVANDO,ABIERTA,-4,120.0,ayer")) {
+            escribir("estados.csv", original.split("\n")[0] + "\n" + fila + "\n");
+            assertThrows(IllegalArgumentException.class, () -> new GestorDatos(directorio.toString()));
+        }
+        escribir("estados.csv", original);
+        escribir("ciudades.csv", leer("ciudades.csv").replace(",ES", ",XX"));
+        assertThrows(IllegalArgumentException.class, () -> new GestorDatos(directorio.toString()));
+    }
+
+    @Test
+    public void cargaLosCSVGeneradosPorDataInitializer() throws IOException {
+        Path salida = temporal.getRoot().toPath().resolve("inicializador");
+        DataInitializer.inicializarDatos(salida.toString());
+        GestorDatos generado = new GestorDatos(salida.toString());
+        assertEquals(44, generado.getCiudades().size());
+        assertEquals(45, generado.getEstaciones().size());
+        assertEquals(424, generado.getItinerarios().size());
+        assertEquals(39L, generado.getEstaciones().stream().filter(e -> e.getEstado() != null).count());
+        Estacion formigal = generado.getEstaciones().stream()
+                .filter(e -> e.getNombre().equals("Formigal - Panticosa")).findFirst().orElseThrow();
+        assertEquals("Sallent de Gállego", formigal.getCiudad().getNombre());
+        assertEquals(Clima.NEVANDO, formigal.getEstado().getClima());
+    }
+
+    private void assertEstado(EstadoEstacion estado, Clima clima, Apertura apertura, int temperatura,
+            float km, long fecha) {
+        assertNotNull(estado);
+        assertEquals(clima, estado.getClima());
+        assertEquals(apertura, estado.getApertura());
+        assertEquals(temperatura, estado.getTemperatura());
+        assertEquals(km, estado.getKmEsquiables(), 0.001f);
+        assertEquals(fecha, estado.getActualizacion().getTime());
+    }
+
+    private void escribir(String archivo, String contenido) throws IOException {
+        Files.writeString(directorio.resolve(archivo), contenido, StandardCharsets.UTF_8);
+    }
+
+    private String leer(String archivo) throws IOException {
+        return Files.readString(directorio.resolve(archivo), StandardCharsets.UTF_8);
+    }
+
+}
